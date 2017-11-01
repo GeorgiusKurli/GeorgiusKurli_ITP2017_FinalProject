@@ -35,6 +35,40 @@ def Start_Menu():
                 if start_button.rect.collidepoint(mouse.get_pos()):
                     breaker = False
 
+                if help_button.rect.collidepoint(mouse.get_pos()):
+                    help_menu()
+
+
+def help_menu():
+    #Set the variables and displays
+    main_frame = display.set_mode((1080,720))
+    breaker = True
+    helpbackground = cl.BackGround("HelpBackground.png")
+
+    #creating buttons
+    back_button = cl.Button("Back to Menu", 150,45)
+
+    #grouping sprites
+    help_menu_sprites = Group(helpbackground,back_button)
+
+    #main startmenu loop
+    while breaker:
+        main_frame.fill(cl.white)
+        help_menu_sprites.draw(main_frame)
+        display.update()
+
+        #checks if quit button is clicked
+        for ev in event.get():
+            if ev.type == QUIT:
+                pygame.quit()
+                exit()
+
+            #checks if start button is clicked
+            elif ev.type == MOUSEBUTTONDOWN:
+                if back_button.rect.collidepoint(mouse.get_pos()):
+                    breaker = False
+
+
 #defining main game
 def Main_Game_Display():
 
@@ -49,7 +83,7 @@ def Main_Game_Display():
     #set the variables
     global log, money, initial_time, total_log, total_money, rates, housestage, cut_timeneeded, car
     log = 10
-    money = 10000000000
+    money = 0
     total_log = 0
     total_money = 0
     cut_progress = 0
@@ -372,7 +406,10 @@ def UpgradeMenu():
     purchaseable_rate = rates+10
     carprice = 1000
     purchaseable_speed = cut_timeneeded - 10
-    speedprice = 48000/cut_timeneeded
+    if cut_timeneeded <= 0:
+        speedprice = 0
+    else:
+        speedprice = 48000/cut_timeneeded
 
     #creating buttons
     back_button = cl.Button("Back to Game", 100,50,42, cl.white)
@@ -557,7 +594,7 @@ def Driving_Phase():
             if car.x <= 1058:
                 car.move(1,0)
 
-        #creating roads every 0.2 seconds
+        #creating roads every 0.1 seconds
         if pygame.time.get_ticks() - road_timer >= 100:
             sway = random.randint(-10,10)
             tempxcoor = tempxcoor + sway
@@ -590,17 +627,21 @@ def Driving_Phase():
 
 #menu when car crashes
 def Crash_Menu():
+    global log
 
     #Set the variables and displays
     main_frame = display.set_mode((1080,720))
     breaker = True
+    logs_lost = int(logs*0.2)
+    log -= logs_lost
 
     #creating buttons
     youcrash_sign = cl.Button("You went offroad!", 540,100,100)
+    logslost_sign = cl.Button("You lost %d logs!"%logs_lost, 540, 250)
     continue_button = cl.Button("Continue", 540,360)
 
     #grouping sprites
-    start_menu_sprites = Group(continue_button, youcrash_sign)
+    start_menu_sprites = Group(continue_button, youcrash_sign, logslost_sign)
 
     #main startmenu loop
     while breaker:
