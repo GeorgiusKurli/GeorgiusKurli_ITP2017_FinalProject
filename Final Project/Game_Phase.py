@@ -609,7 +609,7 @@ def Driving_Phase():
                 road.remove(object)
 
         #after 5 seconds, game starts to check if car is offroad
-        if pygame.time.get_ticks() - initial_drivingtime >= 4000:
+        if pygame.time.get_ticks() - initial_drivingtime >= 2000:
 
             if spritecollideany(car, road):
 
@@ -632,7 +632,7 @@ def Crash_Menu():
     #Set the variables and displays
     main_frame = display.set_mode((1080,720))
     breaker = True
-    logs_lost = int(logs*0.2)
+    logs_lost = int(log*0.2)
     log -= logs_lost
 
     #creating buttons
