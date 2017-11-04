@@ -103,7 +103,8 @@ def Main_Game_Display():
 
 
     #grouping sprites
-    main_game_sprites = Group(main_game_background, main_game_backgroundup, player, market_button, stats_button, upgrade_button, go_home_button)
+    main_game_sprites = Group(main_game_background, main_game_backgroundup, player, 
+        market_button, stats_button, upgrade_button, go_home_button)
     trees = Group()
 
     #taking initial times
@@ -120,22 +121,13 @@ def Main_Game_Display():
     #setting mini menu as false
     showmarketoptions = False
 
-
-    #creating first tree
-    temptree = cl.Tree()
-    trees.add(temptree)
-
     #creating clock
     ingameclock = pygame.time.Clock()
-    main_frame.fill(cl.light_green)
-    trees.draw(main_frame)
-    main_game_sprites.draw(main_frame)
-    display.update()
 
     #Main game loop
     while breaker:
 
-        #setting fps cap to 60
+        #setting frame per second cap to 60
         ingameclock.tick(60)
 
         #main event checking
@@ -400,8 +392,8 @@ def UpgradeMenu():
     upgrade_background = cl.BackGround("Upgrade_Background V1.png")
 
     #setting variables
-    pruchaseable_stage = housestage + 1
-    houseprice = pruchaseable_stage * 500
+    purchaseable_stage = housestage + 1
+    houseprice = purchaseable_stage * 500
     rate_price = rates*2.5
     purchaseable_rate = rates+10
     carprice = 1000
@@ -416,7 +408,7 @@ def UpgradeMenu():
     money_button = cl.Button("Money: %d"%money, 900,125,50, color = cl.white)
     log_button = cl.Button("Log: %d"%log, 900,175,50, color = cl.white)
     buy_house_button = cl.Button("Buy: %d"%houseprice, 120, 550, 42, color = cl.white)
-    buy_house = cl.Button("House Stage %d"%pruchaseable_stage, 120, 500, 42, color = cl.white)
+    buy_house = cl.Button("House Stage %d"%purchaseable_stage, 120, 500, 42, color = cl.white)
     buy_rate_button = cl.Button("Buy: %d"%rate_price, 350,550,42,color = cl.white)
     buy_rate = cl.Button("Rates = %d"%purchaseable_rate, 350,500,42,color = cl.white)
     buy_car_button = cl.Button("Buy: %d"%carprice, 600,550,42,color = cl.white)
@@ -454,7 +446,7 @@ def UpgradeMenu():
                         money -= houseprice
                         housestage += 1
                         houseprice = (housestage + 1) * 500
-                        pruchaseable_stage += 1
+                        purchaseable_stage += 1
 
                 if buy_rate_button.rect.collidepoint(mouse.get_pos()):
                     if money >= rate_price:
@@ -487,7 +479,7 @@ def UpgradeMenu():
         
         #updates housestage button and caps the housestage to 5
         if housestage < 5:
-            buy_house.update_message("House Stage %d"%pruchaseable_stage)
+            buy_house.update_message("House Stage %d"%purchaseable_stage)
             buy_house_button.update_message("Buy: %d"%houseprice)
 
         else:
