@@ -248,6 +248,15 @@ def Main_Game_Display():
             temptree = cl.Tree()
             trees.add(temptree)
             tree_timer = pygame.time.get_ticks()
+
+        for sprites in main_game_sprites:
+            if isinstance(sprites,cl.Button):
+                if sprites.rect.collidepoint(mouse.get_pos()):
+                    sprites.change_colour(cl.white)
+                
+                else:
+                    sprites.change_colour(cl.black)
+
         
         #updating screen
         main_frame.fill(cl.light_green)
@@ -279,7 +288,8 @@ def MarketMenu(result = None):
         rates_button = cl.Button("Rates: %d"%rates, 850,150,50, color = cl.white)
 
     #grouping sprites
-    market_sprites = Group(main_game_background, market_background, sell_button, back_button, money_button, log_button, rates_button)
+    market_sprites = Group(main_game_background, market_background, sell_button, back_button, money_button, log_button, 
+        rates_button)
 
     #Main market loop
     breaker = True
@@ -330,7 +340,9 @@ def StatsMenu():
     #height = 98, width = 1080
 
     #setting variables
-    global log, money, initial_time, total_log, total_money, housestage
+    global log, money, initial_time, total_log, total_money, rates, housestage, cut_timeneeded, car
+
+    
     time_spent = (pygame.time.get_ticks() - initial_time) / 1000
     minutes_spent = time_spent/60
     seconds_spent = time_spent%60
@@ -340,22 +352,26 @@ def StatsMenu():
 
     #creating buttons
     back_button = cl.Button("Back to Game", 100,150,42, backcolor = cl.light_green)
-    total_money_button = cl.Button("Total Earned: %d"%total_money, 250, 300,42)
-    total_log_button = cl.Button("Total Trees Cut: %d"%total_log, 250, 400, 42)
-    total_time_button = cl.Button("Time Spent: %dhours %dminutes %dseconds"%(hours_shown, minutes_shown, seconds_spent), 450, 500, 42)
-    housestagenum = cl.Button("Current House Stage: %d"%housestage, 250, 600,42)
+    total_money_button = cl.Button("Total Earned: %d"%total_money, 540, 150,42)
+    total_log_button = cl.Button("Total Trees Cut: %d"%total_log, 540, 200, 42)
+    total_time_button = cl.Button("Time Spent: %dhours %dminutes %dseconds"%(hours_shown, minutes_shown, seconds_spent), 540, 250, 42)
+    housestagenum = cl.Button("Current House Stage: %d"%housestage, 540, 300,42)
+    save_button = cl.Button("Save Game", 100,550,42)
+    load_button = cl.Button("Load Game", 100,600,42)
 
     #grouping sprites
-    stats_shown = Group(main_game_background, main_game_backgroundup, back_button, total_money_button, total_log_button, total_time_button, 
-        housestagenum)
+    stats_shown = Group(main_game_background, main_game_backgroundup, total_money_button, total_log_button, total_time_button, 
+        housestagenum,)
 
+    stats_buttons = Group(back_button, save_button, load_button)
 
     #Main stats menu loop
     while breaker:
 
         #creating and updating screen
-        main_frame.fill(cl.white)
+        main_frame.fill(cl.light_green)
         stats_shown.draw(main_frame)
+        stats_buttons.draw(main_frame)
         display.update()
 
         #main event checking
@@ -368,7 +384,45 @@ def StatsMenu():
             if ev.type == MOUSEBUTTONDOWN:
                 #checks if back button is pressed
                 if back_button.rect.collidepoint(mouse.get_pos()):
-                        breaker = False
+                    breaker = False
+
+                #checks if save button is pressed
+                if save_button.rect.collidepoint(mouse.get_pos()):
+                    save_varlist = [log,money,initial_time,total_log,total_money,rates,housestage,cut_timeneeded,car]
+                    
+                    tempfile = open("Save.txt", "w")
+
+                    #writes every variable in a text file
+                    for data in save_varlist:
+                        tempfile.write("%s\n" %str(data))
+                        
+                    tempfile.close()
+
+                #checks if load button is pressed
+                if load_button.rect.collidepoint(mouse.get_pos()):
+                    tempfile = open("save.txt")
+                    tempsavelist = tempfile.read().split("\n")
+
+                    #set all the variables to the ones in the file
+                    log = int(tempsavelist[0])
+                    money = int(tempsavelist[1])
+                    initial_time = int(tempsavelist[2])
+                    total_log = int(tempsavelist[3])
+                    total_money = int(tempsavelist[4])
+                    rates = int(tempsavelist[5])
+                    housestage = int(tempsavelist[6])
+                    cut_timeneeded = int(tempsavelist[7])
+                    car = tempsavelist[8]
+
+                    tempfile.close()
+                    
+
+        #checks if buttons in group stats_button is hovered
+        for sprite in stats_buttons:
+            if sprite.rect.collidepoint(mouse.get_pos()):
+                sprite.change_colour(cl.white)
+            else:
+                sprite.change_colour(cl.black)
 
         #update time spent
         minutes_spent = time_spent/60
@@ -376,7 +430,13 @@ def StatsMenu():
         hours_shown = minutes_spent/60
         minutes_shown = minutes_spent%60
         time_spent = (pygame.time.get_ticks() - initial_time) / 1000
+        
+        #updates buttons
         total_time_button.update_message("Time Spent: %dhours %dminutes %dseconds"%(hours_shown, minutes_shown, seconds_spent))
+        total_money_button.update_message("Total Earned: %d"%total_money)
+        total_log_button.update_message("Total Trees Cut: %d"%total_log)
+        total_time_button.update_message("Time Spent: %dhours %dminutes %dseconds"%(hours_shown, minutes_shown, seconds_spent))
+        housestagenum.update_message("Current House Stage: %d"%housestage)
 
 
 #menu for upgrades
@@ -417,8 +477,8 @@ def UpgradeMenu():
     buy_speedup_button = cl.Button("Buy: %d"%speedprice, 850,550,42,color = cl.white)
 
     #grouping sprites
-    upgrade_sprites = Group(main_game_background, upgrade_background, back_button, money_button, log_button, buy_house, buy_house_button,
-        buy_rate_button, buy_rate, buy_car_button, buy_car, buy_speedup, buy_speedup_button)
+    upgrade_sprites = Group(main_game_background, upgrade_background, back_button, money_button, log_button, buy_house, 
+        buy_house_button,   buy_rate_button, buy_rate, buy_car_button, buy_car, buy_speedup, buy_speedup_button)
 
     #Main market loop
     breaker = True

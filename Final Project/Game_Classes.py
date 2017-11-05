@@ -10,6 +10,7 @@ class Button(Sprite):
         self.backcolor = backcolor
         self.x = x
         self.y = y
+        self.message = message
         self.font = pygame.font.Font(None, fontsize)
         self.image = self.font.render(message,1, color, backcolor)
         self.rect = self.image.get_rect()
@@ -18,8 +19,13 @@ class Button(Sprite):
     #used to update what the buttons display
     def update_message(self, message):
         self.image = self.font.render(message,1,self.color, self.backcolor)
+        self.message = message
         self.rect = self.image.get_rect()
         self.rect.center = (self.x,self.y)
+
+    def change_colour(self,color):
+        self.color = color
+        self.image = self.font.render(self.message,1,color, self.backcolor)
 
 
 #Class to make background
