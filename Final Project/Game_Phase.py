@@ -342,13 +342,12 @@ def StatsMenu():
     #setting variables
     global log, money, initial_time, total_log, total_money, rates, housestage, cut_timeneeded, car
 
-    
+    #set the time
     time_spent = (pygame.time.get_ticks() - initial_time) / 1000
     minutes_spent = time_spent/60
     seconds_spent = time_spent%60
     hours_shown = minutes_spent/60
     minutes_shown = minutes_spent%60
-
 
     #creating buttons
     back_button = cl.Button("Back to Game", 100,150,42, backcolor = cl.light_green)
@@ -400,7 +399,7 @@ def StatsMenu():
 
                 #checks if load button is pressed
                 if load_button.rect.collidepoint(mouse.get_pos()):
-                    tempfile = open("save.txt")
+                    tempfile = open("Save.txt")
                     tempsavelist = tempfile.read().split("\n")
 
                     #set all the variables to the ones in the file
@@ -516,7 +515,7 @@ def UpgradeMenu():
                         rate_price = rates * 2.5
 
                 if buy_car_button.rect.collidepoint(mouse.get_pos()):
-                    if money >= carprice and car == False:
+                    if money >= carprice and (car == False or car == "False"):
                         money -= carprice
                         car = True
 
@@ -660,7 +659,7 @@ def Driving_Phase():
             if object.y >= 720:
                 road.remove(object)
 
-        #after 5 seconds, game starts to check if car is offroad
+        #after 2 seconds, game starts to check if car is offroad
         if pygame.time.get_ticks() - initial_drivingtime >= 2000:
 
             if spritecollideany(car, road):
@@ -668,6 +667,7 @@ def Driving_Phase():
                 onroad = True
             else:
                 onroad = False
+        
         #set winning conditions
         if pygame.time.get_ticks() - initial_drivingtime >= 35000:
             breaker = False
