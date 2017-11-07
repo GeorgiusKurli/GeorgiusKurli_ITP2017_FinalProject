@@ -3,6 +3,7 @@ from pygame.sprite import *
 from pygame.mixer import *
 import Game_Classes as cl
 import random
+ 
 
 #Startmenu function to be called
 def Start_Menu():
@@ -412,6 +413,10 @@ def StatsMenu():
                     housestage = int(tempsavelist[6])
                     cut_timeneeded = int(tempsavelist[7])
                     car = tempsavelist[8]
+                    if car == "True":
+                        car = True
+                    if car == "False":
+                        car = False
 
                     tempfile.close()
                     
@@ -515,7 +520,7 @@ def UpgradeMenu():
                         rate_price = rates * 2.5
 
                 if buy_car_button.rect.collidepoint(mouse.get_pos()):
-                    if money >= carprice and (car == False or car == "False"):
+                    if money >= carprice and car == False:
                         money -= carprice
                         car = True
 
